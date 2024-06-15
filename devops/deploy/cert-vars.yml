@@ -1,0 +1,62 @@
+#Variables related to readiness and liveness. Options health_probes.enabled: on|off
+health_probes:
+  enabled: 'on'
+  readiness:
+    path: "/actuator/health/readiness"
+    initialDelaySeconds: 60
+    timeoutSeconds: 10
+    periodSeconds: 30
+  liveness:
+    path: "/actuator/health/liveness"
+    initialDelaySeconds: 60
+    timeoutSeconds: 10
+    periodSeconds: 30
+
+#Variable to active swagger. Options: yes|no
+swagger_active: 'yes'
+include_hpa: 'no'
+
+#Variable to enable hashicorp vault for microservice credentials. Options: yes|no
+hashicorp_vault_enable: 'no'
+
+#Variable related to group name (no blank spaces). If the value is not set, it will be a project name defined in groovy file by default.
+group_name: 'QT_MANAGEMENT'
+
+#REQUIRED: Microservice Type: BS|UX|AP|SP (BS: Business Service, UX: User Experience, AP: Application, SP: Support)
+#REQUIRED: Application CODE (4 characters). Example: QUXTECH|ZQBSTECH|QAPZT|XSPTQS
+ms_type: 'UX'
+app_code: 'QUXTECH'
+
+#Runtime engine, GRL|HS|J9 (GRL: GraalVM, HS: JVM-HotSpot, J9: OpenJ9)
+runtime_engine: 'HS-MSM'
+
+#Logging engine LOGBACK|LOG4J2
+logging_engine: 'LOGBACK'
+
+#map for ingress k8s
+ingress_map:
+  ingres1:
+    path: "/com/qoritech/create-account/v1/create-account"
+    serviceName: "{{ new_ap_name }}"
+    servicePort: "{{ docker_container_port }}"
+
+
+#general envs:
+#SPRING_CLOUD_CONFIG_LABEL: debe ir la rama donde residen los properties espesificos de la aplicacion: properties-1.1, properties-1.2, properties-1.3
+envs:
+  - name: SPRING_CLOUD_CONFIG_LABEL
+    value: properties-1.1
+
+resources_plan:
+  cpu_limits: 2
+  cpu_requests: 40m
+  memory_limits: 1512M
+  memory_requests: 256M
+  target_average_cpu: 900
+  target_average_memory: 350
+  jvm_xms: 32m
+  jvm_xmx: 1024m
+
+replicas_plan:
+  min_replicas: 1
+  max_replicas: 4
